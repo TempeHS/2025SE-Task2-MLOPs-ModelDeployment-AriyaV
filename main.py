@@ -1,90 +1,63 @@
-from flask import Flask
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import jsonify
-import requests
-from flask_wtf import CSRFProtect
-from flask_csp.csp import csp_header
+from flask import Flask, request, jsonify, render_template
+from flask_wtf.csrf import CSRFProtect
 import logging
+import pickle
+import numpy as np
 
-import userManagement as dbHandler
-
-# Code snippet for logging a message
-# app.logger.critical("message")
-
-app_log = logging.getLogger(__name__)
+# Configure logging to write to security_log.log
 logging.basicConfig(
     filename="security_log.log",
     encoding="utf-8",
     level=logging.DEBUG,
-    format="%(asctime)s %(message)s",
+    format="%(asctime)s %(levelname)s: %(message)s",
 )
 
-# Generate a unique basic 16 key: https://acte.ltd/utils/randomkeygen
 app = Flask(__name__)
 app.secret_key = b"_53oi3uriq9pifpff;apl"
 csrf = CSRFProtect(app)
 
+# Load the saved model
+with open('ML/my_saved_model.sav', 'rb') as model_file:
+    model = pickle.load(model_file)
 
-# Redirect index.html to domain root for consistent UX
-@app.route("/index", methods=["GET"])
-@app.route("/index.htm", methods=["GET"])
-@app.route("/index.asp", methods=["GET"])
-@app.route("/index.php", methods=["GET"])
-@app.route("/index.html", methods=["GET"])
-def root():
-    return redirect("/", 302)
+if not model:
+    app.logger.error("Model not loaded properly.")
 
-
-@app.route("/", methods=["POST", "GET"])
-@csp_header(
-    {
-        # Server Side CSP is consistent with meta CSP in layout.html
-        "base-uri": "'self'",
-        "default-src": "'self'",
-        "style-src": "'self'",
-        "script-src": "'self'",
-        "img-src": "'self' data:",
-        "media-src": "'self'",
-        "font-src": "'self'",
-        "object-src": "'self'",
-        "child-src": "'self'",
-        "connect-src": "'self'",
-        "worker-src": "'self'",
-        "report-uri": "/csp_report",
-        "frame-ancestors": "'none'",
-        "form-action": "'self'",
-        "frame-src": "'none'",
-    }
-)
+@app.route('/')
 def index():
-    return render_template("/index.html")
+    app.logger.info("Index page accessed.")
+    return render_template('index.html')
 
+@app.route('/predict', methods=['POST'])
+@csrf.exempt  # Disable CSRF protection for this route
+def predict():
+    app.logger.info("Predict endpoint triggered.")
+    try:
+        # Get weight and cholesterol from the form
+        weight = float(request.form['weight'])
+        cholesterol = float(request.form['cholesterol'])
 
-@app.route("/privacy.html", methods=["GET"])
-def privacy():
-    return render_template("/privacy.html")
+        # Prepare input for the model
+        features = np.array([[weight, cholesterol]])
 
+        # Make prediction
+        prediction = model.predict(features)
+        result = "High risk of Cardiovascular Disease (CVD)" if prediction[0] == 1 else "Low risk of Cardiovascular Disease (CVD)"
 
-# example CSRF protected form
-@app.route("/form.html", methods=["POST", "GET"])
-def form():
-    if request.method == "POST":
-        email = request.form["email"]
-        text = request.form["text"]
-        return render_template("/form.html")
-    else:
-        return render_template("/form.html")
-
+        app.logger.info(f"Prediction result: {result}")
+        # Return the result to the frontend
+        return render_template('index.html', prediction_text=result)
+    except Exception as e:
+        app.logger.error(f"Error during prediction: {str(e)}")
+        return render_template('index.html', prediction_text=f"Error: {str(e)}")
 
 # Endpoint for logging CSP violations
 @app.route("/csp_report", methods=["POST"])
 @csrf.exempt
 def csp_report():
-    app.logger.critical(request.data.decode())
+    app.logger.critical(f"CSP violation reported: {request.data.decode()}")
     return "done"
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
+    app.logger.info("Starting the application...")
     app.run(debug=True, host="0.0.0.0", port=5000)
