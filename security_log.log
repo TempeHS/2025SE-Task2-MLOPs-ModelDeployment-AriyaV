@@ -393,3 +393,25 @@
 2025-04-08 00:45:27,330 INFO: 127.0.0.1 - - [08/Apr/2025 00:45:27] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
 2025-04-08 00:45:27,332 INFO: 127.0.0.1 - - [08/Apr/2025 00:45:27] "[36mGET /static/js/bootstrap.bundle.min.js HTTP/1.1[0m" 304 -
 2025-04-08 00:45:27,335 INFO: 127.0.0.1 - - [08/Apr/2025 00:45:27] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-04-09 04:42:34,681 INFO: Starting the application...
+2025-04-09 04:42:34,727 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.1.255:5000
+2025-04-09 04:42:34,727 INFO: [33mPress CTRL+C to quit[0m
+2025-04-09 04:42:34,728 INFO:  * Restarting with stat
+2025-04-09 04:42:36,006 INFO: Starting the application...
+2025-04-09 04:42:36,012 WARNING:  * Debugger is active!
+2025-04-09 04:42:36,019 INFO:  * Debugger PIN: 729-663-472
+2025-04-09 04:42:40,635 INFO: Index page accessed.
+2025-04-09 04:42:40,638 INFO: 127.0.0.1 - - [09/Apr/2025 04:42:40] "GET / HTTP/1.1" 200 -
+2025-04-09 04:42:40,866 INFO: 127.0.0.1 - - [09/Apr/2025 04:42:40] "GET /static/css/bootstrap.min.css HTTP/1.1" 200 -
+2025-04-09 04:42:40,887 INFO: 127.0.0.1 - - [09/Apr/2025 04:42:40] "GET /static/js/bootstrap.bundle.min.js HTTP/1.1" 200 -
+2025-04-09 04:42:40,903 INFO: 127.0.0.1 - - [09/Apr/2025 04:42:40] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-04-09 04:42:41,101 INFO: 127.0.0.1 - - [09/Apr/2025 04:42:41] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-09 04:43:09,872 INFO: Predict endpoint triggered.
+2025-04-09 04:43:09,875 INFO: Prediction result: High risk of Cardiovascular Disease (CVD)
+2025-04-09 04:43:09,876 INFO: 127.0.0.1 - - [09/Apr/2025 04:43:09] "POST /predict HTTP/1.1" 200 -
+2025-04-09 04:43:09,914 INFO: 127.0.0.1 - - [09/Apr/2025 04:43:09] "[36mGET /static/js/bootstrap.bundle.min.js HTTP/1.1[0m" 304 -
+2025-04-09 04:43:09,915 INFO: 127.0.0.1 - - [09/Apr/2025 04:43:09] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025-04-09 04:43:09,915 INFO: 127.0.0.1 - - [09/Apr/2025 04:43:09] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
